@@ -1,0 +1,28 @@
+-- schema.sql
+CREATE DATABASE IF NOT EXISTS user_management
+  CHARACTER SET = 'utf8mb4'
+  COLLATE = 'utf8mb4_general_ci';
+USE user_management;
+
+-- Roles first (no FKs yet)
+DROP TABLE IF EXISTS roles;
+CREATE TABLE roles (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  role_name VARCHAR(50) NOT NULL
+) ENGINE=InnoDB;
+
+INSERT INTO roles (role_name) VALUES ('Admin'), ('User');
+
+-- Users table
+DROP TABLE IF EXISTS users;
+CREATE TABLE users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(100) NOT NULL,
+  email VARCHAR(100) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  role_id INT NOT NULL,
+  profile_pic VARCHAR(255) DEFAULT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_users_role FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB;
